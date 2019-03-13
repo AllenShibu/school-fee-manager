@@ -1,3 +1,8 @@
+/**
+ * Authors: Albert Joseph Sheen
+ *          Allen Shibu
+ */
+
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
