@@ -1,6 +1,10 @@
 /**
- * Authors: Albert Joseph Sheen
- *          Allen Shibu
+ * @author Allen Shibu
+ * @author Albert Joseph Sheen
+ * SchoolFeeManager helps small schools to store payment detaisl of fees of three terms.
+ * All the files required for this program are stored in C:\data\schoolfeemanager\
+ * Passwords of users are stored in C:\data\schoolfeemanger\users\
+ * Details of payment of each class is stored in C:\data\schoolfeemanager\database\
  */
 
 import java.io.BufferedReader;
@@ -61,12 +65,18 @@ public class FeeManager extends DateCalculations {
                     }
                 } while( usrch != 0 );
             } else {
-                //object.findTodaysTransactions();
+                //object.displayTodaysTransactions();
             }
         }
     }
 
     public static void cloneDatabase() throws IOException {
+        /**
+         * Clones the details of payment of each class into a double dimensional array for better handling.
+         * The details of payment of each class is stored in C:\data\schoolfeemanager\database\ inside files named
+         * after the class in the following format.
+         * (nameofthestudentinlowercasewithoutspaces) (dateofbirth) (paidornotpaidfirsttermfee) (paidornotpaidsecondtermfee) (paidornotpaidthirdtermfee)
+         */
         int i = 0, j = 0;
 
         classFile = new File( "C:\\data\\schoolfeemanager\\database\\" + studentClass + studentDiv + ".txt" );
@@ -89,6 +99,9 @@ public class FeeManager extends DateCalculations {
     }
 
     public static void displayDetails() {
+        /**
+         * Displays details of the required student
+         */
         int i, j;
         for( i = 0; ; i ++ ) {
             if( classArray[i][0].equals( studentName ) ) {
@@ -118,6 +131,10 @@ public class FeeManager extends DateCalculations {
     }
 
     public static void payFees() {
+        //Yet to be completed
+        /**
+         * Registers the payment of fees after checking whether payment is late and other things.
+         */
         int i = studentRollNo  --, j, currentTerm;
 
         currentTerm = findCurrentTerm();
@@ -149,7 +166,28 @@ public class FeeManager extends DateCalculations {
         }
     }
 
+    public static void displayTodaysTransactions() {
+        //Yet to be written
+        /**
+         * Displays the day's transactions for the administrator
+         */
+    }
+
+    public static void saveDatabase() {
+        //Yet to be written
+        /**
+         * Saves the details of payment to the database on the computer from the array after its use.
+         */
+    }
+
     private static boolean authenticate ( String userName, String password ) throws IOException {
+        /**
+         * Checks the username and password enterd by the user against a hashed copy of the password stored on th machine
+         * Hashed passwords are stored in C:\data\schoolfeemanager\users\ inside files named after each user.
+         * Hashing starts with an initial value of 1010101010101010 and the ASCII code of each charachter in the
+         * password is added to it.
+         * Function returns true if the username and password are correct; else false.
+         */
         File user = new File( "C:\\data\\schoolfeemanager\\users\\" + userName + ".txt" );
 
         if ( ! ( user.exists() ) ) {
@@ -180,9 +218,3 @@ public class FeeManager extends DateCalculations {
         }
     }
 }
-
-/**
- * Term 1 -> June 1 -- August 31
- * Term 2 -> September 1 -- December 31
- * Term 3 -> January 1 -- March 31
- */
