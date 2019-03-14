@@ -1,6 +1,6 @@
 # school-fee-manager
 
-This is my ISC second year project made in collaboration with Albert Joseph Sheen.
+This is my ISC second year project made along with my friend Albert Joseph Sheen and others.
 
 This is a command-line program used to record and process fee details of a school.
 
