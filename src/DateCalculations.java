@@ -4,9 +4,9 @@ public class DateCalculations {
     public static String yearStr, monthStr, dateStr, fullDateStr;
     public static int year, month, date;
     public static String todaysDate() {
-        //Entering date as separate elements to add more functonality later
         Scanner read = new Scanner( System.in );
 
+        //Date is entered seperately to add more flexibility when handling it.
         System.out.print( "Enter today's year in the foramt YYYY: " );
         yearStr = read.next();
         year = Integer.parseInt( yearStr );
@@ -26,6 +26,12 @@ public class DateCalculations {
     }
 
     public static int findCurrentTerm() {
+        /**
+         * Academic year is divided into three terms as follows
+         * Term 1 -- June to August
+         * Term 2 -- September to December
+         * Term 3 -- January to March
+         */
         if( monthStr.equals( "06" ) || monthStr.equals( "07" ) || monthStr.equals( "08" ) ) {
             return 1;
         } else if ( monthStr.equals( "09" ) || monthStr.equals( "10" ) || monthStr.equals( "11" ) || monthStr.equals( "12" ) ) {
@@ -48,6 +54,7 @@ public class DateCalculations {
     }
 
     public static int findDaysLate() {
+        //Yet to be written
         return 0;
     }
 }
