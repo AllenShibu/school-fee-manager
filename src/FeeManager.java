@@ -2,9 +2,9 @@
  * @author Allen Shibu
  * @author Albert Joseph Sheen
  * SchoolFeeManager helps small schools to store payment detaisl of fees of three terms.
- * All the files required for this program are stored in C:\data\schoolfeemanager\
- * Passwords of users are stored in C:\data\schoolfeemanger\users\
- * Details of payment of each class is stored in C:\data\schoolfeemanager\database\
+ * All the files required for this program are stored in C:\data\schoolfeemanager
+ * Passwords of users are stored in C:\\data\\schoolfeemanger\\users\\
+ * Details of payment of each class is stored in C:\data\schoolfeemanager\database
  */
 
 import java.io.BufferedReader;
@@ -17,7 +17,7 @@ public class FeeManager extends DateCalculations {
     public static final String ADMIN = "admin";
     public static final String TODAYS_DATE = todaysDate();
     public static String userName, userPassword, studentName, studentClass, studentDiv;
-    public static int arrayNo, usrch, studentRollNo, daysLate = 0;
+    public static int  usrchMenu1, usrchMenu2, studentRollNo, daysLate = 0;
     public static String[][] classArray= new String[100][100];
     public static File classFile;
     public static boolean term1PaymentStatus,term2PaymentStatus,term3PaymentStatus;
@@ -34,39 +34,46 @@ public class FeeManager extends DateCalculations {
         System.out.println();
 
         if( authenticate( userName, userPassword) ) {
-            if( ! ( userName.equals( "admin" ) ) ) {
-                System.out.print( "Enter the name of the student: ");
-                studentName = read.next();
-                System.out.println();
-                System.out.print("Enter the class of the student: ");
-                studentClass = read.next();
-                System.out.println();
-                System.out.print("Enter the division of the student: ");
-                studentDiv = read.next();
-                System.out.println();
-
-                cloneDatabase();
-                do {
+                if( ! ( userName.equals( "admin" ) ) ) {
                     do {
-                        System.out.println("1.Check details");
-                        System.out.println("2.Pay fees");
-                        System.out.println("0.Exit");
-                        System.out.print("Enter your choice: ");
-                        usrch = read.nextInt();
-                    } while (usrch != 1 || usrch != 2 || usrch != 0);
+                        System.out.print( "Enter 1 to continue or 0 to exit: " );
+                        usrchMenu1 = read.nextInt();
+                        System.out.println();
+                        System.out.print( "Enter the name of the student: " );
+                        studentName = read.next();
+                        System.out.println();
+                        System.out.print( "Enter the class of the student: " );
+                        studentClass = read.next();
+                        System.out.println();
+                        System.out.print( "Enter the division of the student: " );
+                        studentDiv = read.next();
+                        System.out.println();
 
-                    switch (usrch) {
-                        case 1:
-                            object.displayDetails();
-                            break;
-                        case 2:
-                            object.payFees();
-                            break;
-                    }
-                } while( usrch != 0 );
-            } else {
-                //object.displayTodaysTransactions();
-            }
+                        cloneDatabase();
+                        do {
+                            do {
+                                System.out.println( "1.Check details" );
+                                System.out.println( "2.Pay fees" );
+                                System.out.println( "0.Exit" );
+                                System.out.print( "Enter your choice: " );
+                                usrchMenu2 = read.nextInt();
+                                System.out.println( usrchMenu2 );
+                            } while( usrchMenu2 != 1 || usrchMenu2 != 2 || usrchMenu2 != 0 );
+
+                            switch( usrchMenu2 ) {
+                                case 1:
+                                    displayDetails();
+                                    break;
+                                case 2:
+                                    payFees();
+                                    break;
+                            }
+                        } while( usrchMenu2 != 0 );
+                    } while( usrchMenu1 != 0 );
+                }
+            else {
+                    //object.displayTodaysTransactions();
+                }
         }
     }
 
@@ -183,7 +190,7 @@ public class FeeManager extends DateCalculations {
     private static boolean authenticate ( String userName, String password ) throws IOException {
         /**
          * Checks the username and password enterd by the user against a hashed copy of the password stored on th machine
-         * Hashed passwords are stored in C:\data\schoolfeemanager\users\ inside files named after each user.
+         * Hashed passwords are stored in C:\\data\\schoolfeemanager\\users\\ inside files named after each user.
          * Hashing starts with an initial value of 1010101010101010 and the ASCII code of each charachter in the
          * password is added to it.
          * Function returns true if the username and password are correct; else false.
