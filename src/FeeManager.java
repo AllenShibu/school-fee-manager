@@ -3,6 +3,8 @@
  *          Allen Shibu
  */
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +13,10 @@ public class FeeManager extends DateCalculations {
     public static final String ADMIN = "admin";
     public static final String TODAYS_DATE = todaysDate();
     public static String userName, userPassword, studentName, studentClass, studentDiv;
-    public static int arrayNo, usrch, studentRollNo;
+    public static int arrayNo, usrch, studentRollNo, daysLate = 0;
     public static String[][] classArray= new String[100][100];
     public static File classFile;
+    public static boolean term1PaymentStatus,term2PaymentStatus,term3PaymentStatus;
 
     public static void main( String[] args ) throws IOException {
         Scanner read = new Scanner( System.in );
@@ -28,7 +31,7 @@ public class FeeManager extends DateCalculations {
 
         if( authenticate( userName, userPassword) ) {
             if( ! ( userName.equals( "admin" ) ) ) {
-                System.out.print( "Enter the nam of the student: ");
+                System.out.print( "Enter the name of the student: ");
                 studentName = read.next();
                 System.out.println();
                 System.out.print("Enter the class of the student: ");
@@ -38,7 +41,7 @@ public class FeeManager extends DateCalculations {
                 studentDiv = read.next();
                 System.out.println();
 
-                object.cloneDatabase();
+                cloneDatabase();
                 do {
                     do {
                         System.out.println("1.Check details");
@@ -58,23 +61,27 @@ public class FeeManager extends DateCalculations {
                     }
                 } while( usrch != 0 );
             } else {
-                object.findTodaysTransactions();
+                //object.findTodaysTransactions();
             }
         }
     }
 
     public static void cloneDatabase() throws IOException {
-        int i, j;
+        int i = 0, j = 0;
 
         classFile = new File( "C:\\data\\schoolfeemanager\\database\\" + studentClass + studentDiv + ".txt" );
 
         if( classFile.exists() ) {
-            Scanner readFile = new Scanner( classFile );
+            FileReader fw = new FileReader( classFile );
+            BufferedReader readFile = new BufferedReader( fw );
 
-            for( i = 0; ( ! ( readFile.next().equals( "null") ); i++ ) {
+            String text = Integer.toString( readFile.read() );
+            while( !( text.equals( "null" ) ) && i < 100 ) {
                 for( j = 0; j < 5; j ++ ) {
-                    classArray[i][j] = readFile.next();
+                    classArray[i][j] = Integer.toString( readFile.read() );
                 }
+                text = Integer.toString( readFile.read() );
+                i++;
             }
         } else {
             System.out.println("error:class not found");
@@ -114,6 +121,32 @@ public class FeeManager extends DateCalculations {
         int i = studentRollNo  --, j, currentTerm;
 
         currentTerm = findCurrentTerm();
+        j = currentTerm--;
+
+        if( classArray[i][j].equals( "paid" ) ) {
+            term1PaymentStatus = true;
+        } else if( classArray[i][j].equals( "notpaid" ) ) {
+            term1PaymentStatus = false;
+        }
+        if( classArray[i][j + 1].equals( "paid" ) ) {
+            term2PaymentStatus = true;
+        } else if( classArray[i][j + 1].equals( "notpaid" ) ) {
+            term2PaymentStatus = false;
+        }
+        if( classArray[i][j + 2].equals( "paid" ) ) {
+            term3PaymentStatus = true;
+        } else if( classArray[i][j + 2].equals( "notpaid" ) ) {
+            term3PaymentStatus = false;
+        }
+
+
+        if( term1PaymentStatus || term2PaymentStatus || term3PaymentStatus ) {
+            System.out.println( "Fees have already been paid for the term " + currentTerm );
+        } else if( ! ( term1PaymentStatus ) ) {
+            if( isDueDateOver() ) {
+                daysLate = findDaysLate();
+            }
+        }
     }
 
     private static boolean authenticate ( String userName, String password ) throws IOException {
