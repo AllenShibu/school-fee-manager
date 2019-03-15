@@ -1,7 +1,7 @@
 /**
  * @author Allen Shibu
  * @author Albert Joseph Sheen
- * SchoolFeeManager helps small schools to store payment details of fees of three terms.
+ * SchoolFeeManager helps small schools to store payment details of fees for three terms.
  * All the files required for this program are stored in C:\data\schoolfeemanager
  * Passwords of users are stored in C:\\data\\schoolfeemanger\\users\\
  * Details of payment of each class is stored in C:\data\schoolfeemanager\database
