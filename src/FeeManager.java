@@ -7,18 +7,15 @@
  * Details of payment of each class is stored in C:\data\schoolfeemanager\database
  */
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Scanner;
-import java.io.File;
-import java.io.IOException;
 
 public class FeeManager extends DateCalculations {
     public static final String ADMIN = "admin";
     public static final String TODAYS_DATE = todaysDate();
     public static String userName, userPassword, studentName, studentClass, studentDiv;
-    public static int  usrchMenu1, usrchMenu2, studentRollNo, daysLate = 0;
-    public static String[][] classArray= new String[100][100];
+    public static int  usrchMenu1, usrchMenu2, studentRollNo, daysLate = 0, classTotalStudents = 0, currentTerm, amountToPay = 0, studentClassInt, fine;
+    public static String[][] classArray= new String[100][5];
     public static File classFile;
     public static boolean term1PaymentStatus,term2PaymentStatus,term3PaymentStatus;
 
@@ -36,43 +33,47 @@ public class FeeManager extends DateCalculations {
         if( authenticate( userName, userPassword) ) {
                 if( ! ( userName.equals( "admin" ) ) ) {
                     do {
-                        System.out.print( "Enter 1 to continue or 0 to exit: " );
-                        usrchMenu1 = read.nextInt();
-                        System.out.println();
                         System.out.print( "Enter the name of the student: " );
                         studentName = read.next();
                         System.out.println();
-                        System.out.print( "Enter the class of the student: " );
+                        System.out.println( "Enter the class of the student" );
+                        System.out.print( "Note! -1 for L.K.G and -2 for U.K.G: " );
                         studentClass = read.next();
+                        studentClassInt = Integer.parseInt( studentClass );     //For later use
                         System.out.println();
                         System.out.print( "Enter the division of the student: " );
                         studentDiv = read.next();
                         System.out.println();
 
                         cloneDatabase();
-                        do {
+                        if( checkStudentExists() ) {
                             do {
-                                System.out.println( "1.Check details" );
-                                System.out.println( "2.Pay fees" );
-                                System.out.println( "0.Exit" );
-                                System.out.print( "Enter your choice: " );
-                                usrchMenu2 = read.nextInt();
-                                System.out.println( usrchMenu2 );
-                            } while( usrchMenu2 != 1 || usrchMenu2 != 2 || usrchMenu2 != 0 );
+                                do {
+                                    System.out.println( "1.Check details" );
+                                    System.out.println( "2.Pay fees" );
+                                    System.out.println( "0.Exit" );
+                                    System.out.print( "Enter your choice: " );
+                                    usrchMenu2 = read.nextInt();
+                                    System.out.println( usrchMenu2 );
+                                } while( ! ( usrchMenu2 == 1 || usrchMenu2 == 2 || usrchMenu2 == 0 ) );
 
-                            switch( usrchMenu2 ) {
-                                case 1:
-                                    displayDetails();
-                                    break;
-                                case 2:
-                                    payFees();
-                                    break;
-                            }
-                        } while( usrchMenu2 != 0 );
-                    } while( usrchMenu1 != 0 );
+                                switch( usrchMenu2 ) {
+                                    case 1:
+                                        displayDetails();
+                                        break;
+                                    case 2:
+                                        payFees();
+                                        break;
+                                }
+                            } while( ! ( usrchMenu2 == 0 ) );
+                        }
+                        System.out.print( "Enter 1 to continue or 0 to exit the app: " );
+                        usrchMenu1 = read.nextInt();
+                        System.out.println();
+                    } while( ! ( usrchMenu1 == 0 ) );
                 }
             else {
-                    //object.displayTodaysTransactions();
+                    //displayTodaysTransactions();
                 }
         }
     }
@@ -89,20 +90,34 @@ public class FeeManager extends DateCalculations {
         classFile = new File( "C:\\data\\schoolfeemanager\\database\\" + studentClass + studentDiv + ".txt" );
 
         if( classFile.exists() ) {
-            FileReader fw = new FileReader( classFile );
-            BufferedReader readFile = new BufferedReader( fw );
+            Scanner readFile = new Scanner( classFile );
+            readFile.useDelimiter( "&&" );
 
-            String text = Integer.toString( readFile.read() );
-            while( !( text.equals( "null" ) ) && i < 100 ) {
+            while( readFile.hasNext() ) {
                 for( j = 0; j < 5; j ++ ) {
-                    classArray[i][j] = Integer.toString( readFile.read() );
+                    classArray[i][j] = readFile.next().trim();
                 }
-                text = Integer.toString( readFile.read() );
+                if( classArray[i][0].equals( "null" ) ) {
+                    break;
+                }
                 i++;
             }
+            classTotalStudents = i;
         } else {
             System.out.println("error:class not found");
         }
+    }
+
+    public static boolean checkStudentExists() {
+        int i;
+        for( i = 0; i < classTotalStudents; i ++ ) {
+            if( classArray[i][0].equals( studentName ) ) {
+                studentRollNo = i + 1;
+                return true;
+            }
+        }
+        System.out.println( "error:student does not exist" );
+        return false;
     }
 
     public static void displayDetails() {
@@ -110,13 +125,12 @@ public class FeeManager extends DateCalculations {
          * Displays details of the required student
          */
         int i, j;
-        for( i = 0; ; i ++ ) {
+        for( i = 0; i < classTotalStudents ; i ++ ) {
             if( classArray[i][0].equals( studentName ) ) {
-                studentRollNo = i + 1;
-                System.out.println("Student name:\t" + studentName);
-                System.out.println("Roll no:\t\t" + studentRollNo);
+                System.out.println("Student name: " + studentName);
                 for (j = 2; j < 5; j++) {
                     if (classArray[i][j].equals("notpaid")) {
+                        System.out.println( classArray[i][j]);
                         switch (j) {
                             case 2:
                                 System.out.println("First term fees not paid");
@@ -130,9 +144,6 @@ public class FeeManager extends DateCalculations {
                         }
                     }
                 }
-                break;
-            } else if( classArray[i][0].equals( "null" ) ) {
-                break;
             }
         }
     }
@@ -142,10 +153,13 @@ public class FeeManager extends DateCalculations {
         /**
          * Registers the payment of fees after checking whether payment is late and other things.
          */
-        int i = studentRollNo  --, j, currentTerm;
+        Scanner read = new Scanner( System.in );
+        int i = studentRollNo - 1, j;
+        char usrch = 'N';
 
         currentTerm = findCurrentTerm();
-        j = currentTerm--;
+        System.out.println( currentTerm );
+        j = currentTerm - 1;
 
         if( classArray[i][j].equals( "paid" ) ) {
             term1PaymentStatus = true;
@@ -157,7 +171,7 @@ public class FeeManager extends DateCalculations {
         } else if( classArray[i][j + 1].equals( "notpaid" ) ) {
             term2PaymentStatus = false;
         }
-        if( classArray[i][j + 2].equals( "paid" ) ) {
+        if( classArray[i][j + 1].equals( "paid" ) ) {
             term3PaymentStatus = true;
         } else if( classArray[i][j + 2].equals( "notpaid" ) ) {
             term3PaymentStatus = false;
@@ -165,10 +179,81 @@ public class FeeManager extends DateCalculations {
 
 
         if( term1PaymentStatus || term2PaymentStatus || term3PaymentStatus ) {
-            System.out.println( "Fees have already been paid for the term " + currentTerm );
-        } else if( ! ( term1PaymentStatus ) ) {
+            System.out.println( "Fees have already been paid" );
+        } else {
             if( isDueDateOver() ) {
                 daysLate = findDaysLate();
+                fine = daysLate * 10;
+            }
+            System.out.println( "Term " + currentTerm + " fee payment" );
+            amountToPay += calculateFeeAmount();
+            amountToPay += fine;
+            System.out.println( "Base payment rate: " + calculateFeeAmount() );
+            System.out.println( "Fine for " + findDaysLate() + " days late: " + fine );
+            System.out.println( "Total amount to pay: " + amountToPay );
+            System.out.println( "Enter Y to proceed or N to cancel: " );
+            usrch = read.next().charAt( 0 );
+            System.out.println();
+            if( usrch == 'N' ) {
+                System.out.println( "Canceling payment..." );
+            } else {
+                classArray[i][j] = "paid";
+                System.out.println( "Payment successful..." );
+                updateDataBase();
+            }
+        }
+    }
+
+    public static int calculateFeeAmount() {
+        Scanner read = new Scanner( System.in );
+        switch( studentClassInt ) {
+            case -1:
+                return 13000;
+            case -2:
+                return 12880;
+            case 1:
+                return 13350;
+            case 2:
+                return 13350;
+            case 3:
+                return 13710;
+            case 4:
+                return 13710;
+            case 5:
+                return 13710;
+            case 6:
+                return 13463;
+            case 7:
+                return 13463;
+            case 8:
+                return 14003;
+            case 9:
+                return 16270;
+            case 10:
+                return 14245;
+            case 11:
+                return 71303;
+            case 12:
+                return 51192;
+            default:
+                System.out.println( "error:can not determine class automatically" );
+                System.out.print( "Please enter class manually: " );
+                int temp = read.nextInt();
+                System.out.println();
+                return temp;
+        }
+    }
+
+    public static void updateDataBase() {
+        int i, j;
+
+        FileWriter fw = new FileWriter( classFile );
+        BufferedWriter bw = new BufferedWriter( fw );
+        PrintWriter write =new PrintWriter( bw );
+
+        for( i = 0; i < classTotalStudents; i ++ ) {
+            for( j = 0l j < 5; j++ ) {
+                
             }
         }
     }
@@ -195,6 +280,8 @@ public class FeeManager extends DateCalculations {
          * password is added to it.
          * Function returns true if the username and password are correct; else false.
          */
+        return true;
+        /**
         File user = new File( "C:\\data\\schoolfeemanager\\users\\" + userName + ".txt" );
 
         if ( ! ( user.exists() ) ) {
@@ -223,5 +310,6 @@ public class FeeManager extends DateCalculations {
                 return false;
             }
         }
+         */
     }
 }
