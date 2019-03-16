@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="school-fee-manager:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/school_fee_manager_jar</output-path>
+    <root id="archive" name="school-fee-manager.jar">
+      <element id="module-output" name="school-fee-manager" />
+    </root>
+  </artifact>
+</component>
