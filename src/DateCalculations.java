@@ -35,20 +35,20 @@ public class DateCalculations {
          * Academic year is divided into three terms as follows
          * Term 1 -- June to August
          * Term 2 -- September to December
-         * Term 3 -- January to March
+         * Term 3 -- January to March and lasts up to the start of the next academic year
          */
-        if( monthStr.equals( "06" ) || monthStr.equals( "07" ) || monthStr.equals( "08" ) ) {
+        if( month == 6 || month == 7 || month == 8 ) {
             currentTerm = 1;
             return 1;
-        } else if ( monthStr.equals( "09" ) || monthStr.equals( "10" ) || monthStr.equals( "11" ) || monthStr.equals( "12" ) ) {
+        } else if ( month == 9 || month == 10 || month == 11 || month == 12 ) {
             currentTerm = 2;
             return 2;
-        } else if( monthStr.equals( "01" ) || monthStr.equals( "02" ) || monthStr.equals( "03" ) ) {
+        } else if( month == 1 || month == 2 || month == 3 ) {
             currentTerm = 3;
             return 3;
         } else {
-            currentTerm = 0;
-            return 0;
+            currentTerm = 3;
+            return 3;
         }
     }
 
@@ -58,11 +58,11 @@ public class DateCalculations {
          * Number of days late is calculated separately in another function
          */
 
-        if( refTerm == 1 && ( monthStr.equals( "06" ) ||  monthStr.equals( "07" ) ||  monthStr.equals( "08" ) ) ) {
+        if( refTerm == 1 && ( month == 6 || month == 7 || month == 8 ) ) {
             return false;
-        } else if( refTerm == 2 && ( monthStr.equals( "09" ) ||  monthStr.equals( "10" ) ||  monthStr.equals( "11" ) || monthStr.equals( "12" ) ) ) {
+        } else if( refTerm == 2 && ( month == 9 || month == 10 || month == 11 || month == 12 ) ) {
             return false;
-        } else if( refTerm == 3 && ( monthStr.equals( "01" ) ||  monthStr.equals( "02" ) ||  monthStr.equals( "03" ) ) ) {
+        } else if( refTerm == 3 && ( month == 1 || month == 2 || month == 3 ) ) {
             return false;
         } else {
             return true;
@@ -114,18 +114,18 @@ public class DateCalculations {
         return daysLate;
     }
 
-    public static int findDaysInMonth( int monthToFind ) {
+    public static int findDaysInMonth( int refMonth ) {
         /**
          * Finds and returns the number of days in a month and returns it
          * This function is used occasionally in the program
          */
-        if( monthToFind == 1 || monthToFind == 3 || monthToFind == 7 || monthToFind == 8 || monthToFind == 10 || monthToFind == 12 ) {
+        if( refMonth == 1 || refMonth == 3 || refMonth == 7 || refMonth == 8 || refMonth == 10 || refMonth == 12 ) {
             return 31;
-        } else if( monthToFind == 4 || monthToFind == 6 || monthToFind == 9 || monthToFind == 11 ) {
+        } else if( refMonth == 4 || refMonth == 6 || refMonth == 9 || refMonth == 11 ) {
             return 30;
-        } else if ( monthToFind == 2 && year % 4 == 0 ) {
+        } else if ( refMonth == 2 && year % 4 == 0 ) {
             return 29;
-        } else { //if ( monthToFind == 2 &&  year % 4 != 0 ) {
+        } else { //if ( refMonth == 2 &&  year % 4 != 0 ) {
             return 28;
         }
     }
