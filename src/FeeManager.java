@@ -22,7 +22,7 @@ public class FeeManager extends DateCalculations {
     public static int usrchMenu1, usrchMenu2;
     //Array to store details of class for better data handling
     public static String[][] classArray= new String[100][5];
-    public static File classFile;
+    public static File classFile, classFeeFile;
     //Variables indicating payment status of each term
     public static boolean term1PaymentStatus,term2PaymentStatus,term3PaymentStatus;
 
@@ -133,7 +133,7 @@ public class FeeManager extends DateCalculations {
          */
         int i;
         for( i = 0; i < classTotalStudents; i ++ ) {
-            if( classArray[i][0].equals( studentName ) ) {
+            if( classArray[i][0].equalsIgnoreCase( studentName ) ) {
                 studentRollNo = i + 1;
                 return true;
             }
@@ -148,10 +148,10 @@ public class FeeManager extends DateCalculations {
          */
         int i, j;
         for( i = 0; i < classTotalStudents ; i ++ ) {
-            if( classArray[i][0].equals( studentName ) ) {
-                System.out.println("Student name: " + studentName);
+            if( classArray[i][0].equalsIgnoreCase( studentName ) ) {
+                System.out.println("Student name: " + classArray[i][0] );
                 System.out.println( "Roll No: " + studentRollNo );
-                System.out.println( "Date of Birth: " + classArray[i][1] );
+                System.out.println( "Admission No: " + classArray[i][1] );
                 for (j = 2; j < 5; j++) {
                     if (classArray[i][j].equals("notpaid")) {
                         switch (j) {
@@ -218,9 +218,10 @@ public class FeeManager extends DateCalculations {
             amountToPay = 0;
             daysLate = 0;
             fine = 0;
-            if( usrch == 'N' ) {
+            if( usrch == 'N' || usrch == 'n' ) {
                 System.out.println( "Canceling payment..." );
-            } else {
+                term1PaymentStatus = false;
+            } else if( usrch == 'Y' || usrch == 'y' ){
                 classArray[i][1 + 1] = "paid";
                 System.out.println( "Payment successful..." );
                 term1PaymentStatus = true;
@@ -244,9 +245,10 @@ public class FeeManager extends DateCalculations {
             amountToPay = 0;
             daysLate = 0;
             fine = 0;
-            if( usrch == 'N' ) {
+            if( usrch == 'N' || usrch == 'n'  ) {
                 System.out.println( "Canceling payment..." );
-            } else {
+                term2PaymentStatus = false;
+            } else if( usrch == 'Y' || usrch == 'y' ){
                 classArray[i][2 + 1] = "paid";
                 System.out.println( "Payment successful..." );
                 term2PaymentStatus = true;
@@ -270,9 +272,10 @@ public class FeeManager extends DateCalculations {
             amountToPay = 0;
             daysLate = 0;
             fine = 0;
-            if( usrch == 'N' ) {
+            if( usrch == 'N' || usrch == 'n'  ) {
                 System.out.println( "Canceling payment..." );
-            } else {
+                term3PaymentStatus = false;
+            } else if( usrch == 'Y' || usrch == 'y' ){
                 classArray[i][3 + 1] = "paid";
                 term3PaymentStatus = true;
                 System.out.println( "Payment successful..." );
@@ -284,49 +287,62 @@ public class FeeManager extends DateCalculations {
         }
     }
 
-    public static int calculateFeeAmount() {
+    public static int calculateFeeAmount() throws IOException {
         /**
          * Calculates the base fee amount for each class
-         * This method is predetermined using the school's fee structure
+         * Base fee amount for each term is stored in C:\data\schoolfeemanager\fee\ under each class's name.
+         * Base fee can be changed as per needed by changing the value in the files.
          */
-
+        int fee = 0;
+        classFeeFile = new File( "C:\\data\\schoolfeemanager\\fee\\" + studentClass + ".txt" );
         Scanner read = new Scanner( System.in );
+        Scanner readFeeFile = new Scanner( classFeeFile );
+
         switch( studentClassInt ) {
-            case -1:            //L.K.G
-                return 13000;
-            case -2:            //U.K.G
-                return 12880;
+            case - 1:           //L.K.G
+                fee = readFeeFile.nextInt();
+                return fee;
+            case - 2:           //U.K.G
+                fee = readFeeFile.nextInt();
+                return fee;
             case 1:             //STD 1
-                return 13350;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 2:             //STD 2
-                return 13350;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 3:             //STD 3
-                return 13710;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 4:             //STD 4
-                return 13710;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 5:             //STD 5
-                return 13710;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 6:             //STD 6
-                return 13463;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 7:             //STD 7
-                return 13463;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 8:             //STD 8
-                return 14003;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 9:             //STD 9
-                return 16270;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 10:             //STD 10
-                return 14245;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 11:             //STD 11
-                return 23767;
+                fee = readFeeFile.nextInt();
+                return fee;
             case 12:             //STD 12
-                return 17064;
-            default:
-                System.out.println( "error:can not determine class automatically" );
-                System.out.print( "Please enter class manually: " );
-                int temp = read.nextInt();
-                System.out.println();
-                return temp;
+                fee = readFeeFile.nextInt();
+                return fee;
         }
+        return fee;
     }
 
     public static void updateDataBase() throws IOException {
@@ -358,7 +374,7 @@ public class FeeManager extends DateCalculations {
         /**
          * Checks the username and password entered by the user against a hashed copy of the password stored on th machine
          * Hashed passwords are stored in C:\\data\\schoolfeemanager\\users\\ inside files named after each user.
-         * Hashing starts with an initial value of 1010101010101010 and the ASCII code of each charachter in the
+         * Hashing starts with an initial value of 10101010 and the ASCII code of each charachter in the
          * password is added to it.
          * Function returns true if the username and password are correct; else false.
          */
@@ -371,7 +387,7 @@ public class FeeManager extends DateCalculations {
         else {
             Scanner passwordRead = new Scanner( user );
 
-            long passHashCode = 1010101010101010L, passHashCodeRef;
+            long passHashCode = 10101010L, passHashCodeRef;
             int i, passLength = password.length();
 
             passHashCodeRef =  Long.parseLong( passwordRead.next() );
