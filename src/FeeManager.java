@@ -16,7 +16,8 @@ import java.util.Scanner;
 
 public class FeeManager extends DateCalculations {
     public static final String TODAYS_DATE = todaysDate();
-    public static String userName, userPassword, studentName, studentClass, studentDiv;
+    public static String userName, userPassword;
+    public static String studentName, studentClass, studentDiv;
     public static int studentRollNo, daysLate = 0, classTotalStudents = 0, currentTerm, amountToPay = 0, studentClassInt, fine;
     //Variables for user's choice in menus
     public static int usrchMenu1, usrchMenu2;
@@ -26,11 +27,12 @@ public class FeeManager extends DateCalculations {
     //Variables indicating payment status of each term
     public static boolean term1PaymentStatus,term2PaymentStatus,term3PaymentStatus;
 
-    public static void main( String[] args ) throws IOException {
+    public static void main( String[] args )throws IOException {
         /**
          * Main method of the program
          * This method contains only menus
          */
+
         Scanner read = new Scanner( System.in );
 
         System.out.print( "Enter your username: " );
@@ -64,7 +66,7 @@ public class FeeManager extends DateCalculations {
                             System.out.print( "Enter your choice: " );
                             usrchMenu2 = read.nextInt();
                             System.out.println( usrchMenu2 );
-                        } while( ! ( usrchMenu2 == 1 || usrchMenu2 == 2 || usrchMenu2 == 0 ) );
+                        } while( !( usrchMenu2 == 1 || usrchMenu2 == 2 || usrchMenu2 == 0 ) );
 
                         switch( usrchMenu2 ) {
                             case 1:
@@ -78,23 +80,24 @@ public class FeeManager extends DateCalculations {
                                 term1PaymentStatus = false; term2PaymentStatus = false; term3PaymentStatus = false;
                                 break;
                         }
-                    } while( ! ( usrchMenu2 == 0 ) );
+                    } while( !( usrchMenu2 == 0 ) );
                 }
                 System.out.print( "Enter 1 to check another student's details or 0 to exit the app: " );
                 usrchMenu1 = read.nextInt();
                 System.out.println();
-            } while( ! ( usrchMenu1 == 0 ) );
+            } while( !( usrchMenu1 == 0 ) );
         }
     }
 
-    public static void cloneDatabase() throws IOException {
+    public static void cloneDatabase()throws IOException {
         /**
-         * Clones the details of payment of each class into a double dimensional array for better handling.
+         * Clones the details of payment of each class into a double dimensional array for better data handling.
          * The details of payment of each class is stored in C:\data\schoolfeemanager\database\ inside files named
          * after the class in the following format.
          * (nameofthestudentinlowercasewithoutspaces) (dateofbirth) (paidornotpaidfirsttermfee) (paidornotpaidsecondtermfee) (paidornotpaidthirdtermfee)
          */
-        int i = 0, j = 0;
+
+        int i, j;
 
         for( i = 0; i < 100; i ++ ) {
             for( j = 0; j < 5; j ++ ) {
@@ -123,14 +126,17 @@ public class FeeManager extends DateCalculations {
             classTotalStudents = i;
             readFile.close();
         } else {
-            System.out.println("error:class not found");
+            System.out.println( "error:class not found" );
         }
     }
 
     public static boolean checkStudentExists() {
         /**
-         * Functions to check whether the required student exists or not
+         * Functions to check whether the required student exists or not.
+         * The details of students are stored in C:\data\schoolfeemanager\database\ inside files named
+         * after theie class.
          */
+
         int i;
         for( i = 0; i < classTotalStudents; i ++ ) {
             if( classArray[i][0].equalsIgnoreCase( studentName ) ) {
@@ -149,20 +155,20 @@ public class FeeManager extends DateCalculations {
         int i, j;
         for( i = 0; i < classTotalStudents ; i ++ ) {
             if( classArray[i][0].equalsIgnoreCase( studentName ) ) {
-                System.out.println("Student name: " + classArray[i][0] );
+                System.out.println( "Student name: " + classArray[i][0] );
                 System.out.println( "Roll No: " + studentRollNo );
                 System.out.println( "Admission No: " + classArray[i][1] );
                 for (j = 2; j < 5; j++) {
-                    if (classArray[i][j].equals("notpaid")) {
+                    if ( classArray[i][j].equals( "notpaid" ) ) {
                         switch (j) {
                             case 2:
-                                System.out.println("First term fees not paid");
+                                System.out.println( "First term fees not paid" );
                                 break;
                             case 3:
-                                System.out.println("Second term fees not paid");
+                                System.out.println( "Second term fees not paid" );
                                 break;
                             case 4:
-                                System.out.println("Third term fees not paid");
+                                System.out.println( "Third term fees not paid" );
                                 break;
                         }
                     }
@@ -171,7 +177,7 @@ public class FeeManager extends DateCalculations {
         }
     }
 
-    public static void payFees() throws IOException {
+    public static void payFees()throws IOException {
         /**
          * Registers the payment of fees after checking whether payment is late
          * A token 'paid' shows that fees has been paid
@@ -293,9 +299,9 @@ public class FeeManager extends DateCalculations {
          * Base fee amount for each term is stored in C:\data\schoolfeemanager\fee\ under each class's name.
          * Base fee can be changed as per needed by changing the value in the files.
          */
+
         int fee = 0;
         classFeeFile = new File( "C:\\data\\schoolfeemanager\\fee\\" + studentClass + ".txt" );
-        Scanner read = new Scanner( System.in );
         Scanner readFeeFile = new Scanner( classFeeFile );
 
         switch( studentClassInt ) {
@@ -345,11 +351,12 @@ public class FeeManager extends DateCalculations {
         return fee;
     }
 
-    public static void updateDataBase() throws IOException {
+    public static void updateDataBase()throws IOException {
         /**
          * Updates the class database from the classArray[][]
          * Class databases are stored in C:\data\schoolfeemanager\databases
          */
+
         int i, j;
 
         FileWriter fw = new FileWriter( classFile );
@@ -372,9 +379,9 @@ public class FeeManager extends DateCalculations {
 
     private static boolean authenticate ( String userName, String password ) throws IOException {
         /**
-         * Checks the username and password entered by the user against a hashed copy of the password stored on th machine
-         * Hashed passwords are stored in C:\\data\\schoolfeemanager\\users\\ inside files named after each user.
-         * Hashing starts with an initial value of 10101010 and the ASCII code of each charachter in the
+         * Checks the username and password entered by the user against a encrypted copy of the password stored on the machine
+         * Encrypted passwords are stored in C:\\data\\schoolfeemanager\\users\\ inside files named after each user.
+         * Encryption starts with an initial value of 10101010 and the ASCII code of each character in the
          * password is added to it.
          * Function returns true if the username and password are correct; else false.
          */
