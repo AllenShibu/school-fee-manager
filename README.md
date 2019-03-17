@@ -4,4 +4,4 @@ This is my ISC second year project made along with my friend Albert Joseph Sheen
 
 This is a command-line program used to record and process fee details of a school.
 
-main() class of the program is in FeeManager.java
+main function of the program is in FeeManager.java
