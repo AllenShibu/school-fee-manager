@@ -1,10 +1,10 @@
 /**
- * @author Allen Shibu
- * @author Albert Joseph Sheen
  * SchoolFeeManager helps small schools to store payment details of fees for three terms.
  * All the files required for this program are stored in C:\data\schoolfeemanager
  * Passwords of users are stored in C:\\data\\schoolfeemanger\\users\\
  * Details of payment of each class is stored in C:\data\schoolfeemanager\database
+ * @author Allen Shibu
+ * @author Albert Joseph Sheen
  */
 
 import java.io.FileWriter;
@@ -26,12 +26,12 @@ public class FeeManager extends DateCalculations {
     public static File classFile, classFeeFile;
     //Variables indicating payment status of each term
     public static boolean term1PaymentStatus,term2PaymentStatus,term3PaymentStatus;
-
+    
+    /**
+     * Main method of the program
+     * This method contains only menus
+     */
     public static void main( String[] args )throws IOException {
-        /**
-         * Main method of the program
-         * This method contains only menus
-         */
 
         Scanner read = new Scanner( System.in );
 
@@ -89,14 +89,14 @@ public class FeeManager extends DateCalculations {
         }
     }
 
+    /**
+     * Clones the details of payment of each class into a double dimensional array for better data handling.
+     * The details of payment of each class is stored in C:\data\schoolfeemanager\database\ inside files named
+     * after the class in the following format.
+     * (nameofthestudentinlowercasewithoutspaces) (dateofbirth) (paidornotpaidfirsttermfee) (paidornotpaidsecondtermfee) (paidornotpaidthirdtermfee)
+     */
     public static void cloneDatabase()throws IOException {
-        /**
-         * Clones the details of payment of each class into a double dimensional array for better data handling.
-         * The details of payment of each class is stored in C:\data\schoolfeemanager\database\ inside files named
-         * after the class in the following format.
-         * (nameofthestudentinlowercasewithoutspaces) (dateofbirth) (paidornotpaidfirsttermfee) (paidornotpaidsecondtermfee) (paidornotpaidthirdtermfee)
-         */
-
+        
         int i, j;
 
         for( i = 0; i < 100; i ++ ) {
@@ -130,13 +130,13 @@ public class FeeManager extends DateCalculations {
         }
     }
 
+    /**
+     * Functions to check whether the required student exists or not.
+     * The details of students are stored in C:\data\schoolfeemanager\database\ inside files named
+     * after theie class.
+     */
     public static boolean checkStudentExists() {
-        /**
-         * Functions to check whether the required student exists or not.
-         * The details of students are stored in C:\data\schoolfeemanager\database\ inside files named
-         * after theie class.
-         */
-
+        
         int i;
         for( i = 0; i < classTotalStudents; i ++ ) {
             if( classArray[i][0].equalsIgnoreCase( studentName ) ) {
@@ -148,10 +148,10 @@ public class FeeManager extends DateCalculations {
         return false;
     }
 
+    /**
+     * Displays details of the required student
+     */
     public static void displayDetails() {
-        /**
-         * Displays details of the required student
-         */
         int i, j;
         for( i = 0; i < classTotalStudents ; i ++ ) {
             if( classArray[i][0].equalsIgnoreCase( studentName ) ) {
@@ -177,13 +177,13 @@ public class FeeManager extends DateCalculations {
         }
     }
 
+    /**
+     * Registers the payment of fees after checking whether payment is late
+     * A token 'paid' shows that fees has been paid
+     * A token 'notpaid' shows that fees has not been paid
+     */
     public static void payFees()throws IOException {
-        /**
-         * Registers the payment of fees after checking whether payment is late
-         * A token 'paid' shows that fees has been paid
-         * A token 'notpaid' shows that fees has not been paid
-         */
-
+        
         Scanner read = new Scanner( System.in );
         int i = studentRollNo - 1, j;
         char usrch = 'N';
@@ -293,13 +293,13 @@ public class FeeManager extends DateCalculations {
         }
     }
 
+    /**
+     * Calculates the base fee amount for each class
+     * Base fee amount for each term is stored in C:\data\schoolfeemanager\fee\ under each class's name.
+     * Base fee can be changed as per needed by changing the value in the files.
+     */
     public static int calculateFeeAmount() throws IOException {
-        /**
-         * Calculates the base fee amount for each class
-         * Base fee amount for each term is stored in C:\data\schoolfeemanager\fee\ under each class's name.
-         * Base fee can be changed as per needed by changing the value in the files.
-         */
-
+        
         int fee = 0;
         classFeeFile = new File( "C:\\data\\schoolfeemanager\\fee\\" + studentClass + ".txt" );
         Scanner readFeeFile = new Scanner( classFeeFile );
@@ -351,12 +351,12 @@ public class FeeManager extends DateCalculations {
         return fee;
     }
 
+    /**
+     * Updates the class database from the classArray[][]
+     * Class databases are stored in C:\data\schoolfeemanager\databases
+     */
     public static void updateDataBase()throws IOException {
-        /**
-         * Updates the class database from the classArray[][]
-         * Class databases are stored in C:\data\schoolfeemanager\databases
-         */
-
+        
         int i, j;
 
         FileWriter fw = new FileWriter( classFile );
@@ -377,21 +377,27 @@ public class FeeManager extends DateCalculations {
         System.out.println( "Databases have been updated successfully..." );
     }
 
+    /**
+     * Checks the username and password entered by the user against a encrypted copy of the password stored on the machine
+     * Encrypted passwords are stored in C:\\data\\schoolfeemanager\\users\\ inside files named after each user.
+     * Encryption starts with an initial value of 10101010 and the ASCII code of each character in the
+     * password is added to it.
+     * Function returns true if the username and password are correct; else false.
+     * 
+     * @param userName to store user's name
+     * @param password to store password in plain text
+     * @param passHashCode to store hashed password
+     * @param passHashCodeRef to store hashed password that is stored on the disk
+     * @param passLength to store lenght of the password in plain text
+     */
     private static boolean authenticate ( String userName, String password ) throws IOException {
-        /**
-         * Checks the username and password entered by the user against a encrypted copy of the password stored on the machine
-         * Encrypted passwords are stored in C:\\data\\schoolfeemanager\\users\\ inside files named after each user.
-         * Encryption starts with an initial value of 10101010 and the ASCII code of each character in the
-         * password is added to it.
-         * Function returns true if the username and password are correct; else false.
-         */
+        
         File user = new File( "C:\\data\\schoolfeemanager\\users\\" + userName + ".txt" );
 
         if ( ! ( user.exists() ) ) {
             System.out.println( "User does not exist" );
             return false;
-        }
-        else {
+        } else {
             Scanner passwordRead = new Scanner( user );
 
             long passHashCode = 10101010L, passHashCodeRef;
@@ -407,8 +413,7 @@ public class FeeManager extends DateCalculations {
             if ( passHashCode == passHashCodeRef ) {
                 System.out.println( "Authenticated" );
                 return true;
-            }
-            else {
+            } else {
                 System.out.println( "Incorrect password entered" );
                 return false;
             }
