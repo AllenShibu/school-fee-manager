@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class DateCalculations {
     public static String yearStr, monthStr, dateStr, fullDateStr;
     public static int year, month, date, currentTerm;
+    
     public static String todaysDate() {
         Scanner read = new Scanner( System.in );
 
@@ -30,13 +31,14 @@ public class DateCalculations {
         return fullDateStr;
     }
 
+    /**
+     * Academic year is divided into three terms as follows
+     * Term 1 -- June to August
+     * Term 2 -- September to December
+     * Term 3 -- January to March and lasts up to the start of the next academic year
+     */
     public static int findCurrentTerm() {
-        /**
-         * Academic year is divided into three terms as follows
-         * Term 1 -- June to August
-         * Term 2 -- September to December
-         * Term 3 -- January to March and lasts up to the start of the next academic year
-         */
+        
         if( month == 6 || month == 7 || month == 8 ) {
             currentTerm = 1;
             return 1;
@@ -52,12 +54,12 @@ public class DateCalculations {
         }
     }
 
+    /**
+     * Function to check whether the due date is over
+     * Number of days late is calculated separately in another function
+     */
     public static boolean isDueDateOver( int refTerm ) {
-        /**
-         * Function to check whether the due date is over
-         * Number of days late is calculated separately in another function
-         */
-
+        
         if( refTerm == 1 && ( month == 6 || month == 7 || month == 8 ) ) {
             return false;
         } else if( refTerm == 2 && ( month == 9 || month == 10 || month == 11 || month == 12 ) ) {
@@ -69,12 +71,12 @@ public class DateCalculations {
         }
     }
 
+    /**
+     * Calculates the number of days late after the last day of the term
+     * Checking whether the due date is over is done separately in another function
+     */
     public static int findDaysLate( int refTerm ) {
-        /**
-         * Calculates the number of days late after the last day of the term
-         * Checking whether the due date is over is done separately in another function
-         */
-
+        
         int daysLate = 0, tempMonth = month - 1;
         if( tempMonth == 0 ) {
             tempMonth = 12;
@@ -114,11 +116,11 @@ public class DateCalculations {
         return daysLate;
     }
 
+    /**
+     * Finds and returns the number of days in a month and returns it
+     * This function is used occasionally in the program
+     */
     public static int findDaysInMonth( int refMonth ) {
-        /**
-         * Finds and returns the number of days in a month and returns it
-         * This function is used occasionally in the program
-         */
         if( refMonth == 1 || refMonth == 3 || refMonth == 7 || refMonth == 8 || refMonth == 10 || refMonth == 12 ) {
             return 31;
         } else if( refMonth == 4 || refMonth == 6 || refMonth == 9 || refMonth == 11 ) {
